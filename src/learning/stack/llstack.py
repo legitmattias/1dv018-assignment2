@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 
 @dataclass
 class LLNode[T]:
     val: T
-    nxt: "LLNode[T]" | None = None
+    nxt: LLNode[T] | None = None
+
 
 class LLStack[T]:
     def __init__(self) -> None:
