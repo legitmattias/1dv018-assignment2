@@ -1,0 +1,45 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+*.conda
+
+# Conda environment backups
+environment.lock.yml
+
+# Jupyter
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# VS Code / Cursor
+.vscode/*
+!.vscode/settings.json   # keep workspace settings
+
+# Logs / coverage
+*.log
+.coverage
+htmlcov/
+coverage.xml
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project-specific
+activate.sh~
+lint.sh~
