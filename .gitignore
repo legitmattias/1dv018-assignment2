@@ -43,6 +43,9 @@ Thumbs.db
 # Assignment instructions
 instructions/
 
+# Personal notes and documentation
+notes/
+
 # Project-specific
 activate.sh~
 lint.sh~
