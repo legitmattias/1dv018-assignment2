@@ -40,6 +40,9 @@ coverage.xml
 .DS_Store
 Thumbs.db
 
+# Assignment instructions
+instructions/
+
 # Project-specific
 activate.sh~
 lint.sh~
