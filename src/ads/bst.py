@@ -25,9 +25,7 @@ class BST[T]:
     def _height_helper(self, node: BSTNode[T] | None) -> int:
         if node is None:
             return 0
-        return 1 + max(
-            self._height_helper(node.left), self._height_helper(node.right)
-        )
+        return 1 + max(self._height_helper(node.left), self._height_helper(node.right))
 
     def size(self) -> int:
         """Return number of nodes in tree."""
@@ -66,13 +64,11 @@ class BST[T]:
 
     def remove(self, key: T) -> None:
         """Remove key from tree. Raises ValueError if not found."""
-        if not self.contains(key):
-            raise ValueError(f"Key {key} not found in tree")
         self._root = self._remove_helper(self._root, key)
 
     def _remove_helper(self, node: BSTNode[T] | None, key: T) -> BSTNode[T] | None:
         if node is None:
-            return None
+            raise ValueError(f"Key {key} not found in tree")
         if key < node.key:
             node.left = self._remove_helper(node.left, key)
         elif key > node.key:
