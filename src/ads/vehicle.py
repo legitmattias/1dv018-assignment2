@@ -7,7 +7,7 @@ from dataclasses import dataclass
 class Vehicle:
     """Vehicle with Swedish registration number.
 
-    Swedish registration format: 3 letters + 2 digits + 1 letter (e.g., "MLB84A")
+    Swedish registration format: 3 letters + 2 digits + 1 letter (e.g., "ABC12D")
     """
 
     registration: str
