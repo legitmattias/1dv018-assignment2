@@ -91,7 +91,24 @@ class HashTableSC[K, V]:
         Returns:
             True if key exists, False otherwise
         """
-        return self.get(key) is not None
+        hv = hash(key) % self.sz
+        return self._contains_chain(self.table[hv], key)
+
+    def _contains_chain(self, node: LLNode[tuple[K, V]] | None, key: K) -> bool:
+        """Recursively search chain for key.
+
+        Args:
+            node: Current node in chain
+            key: Key to find
+
+        Returns:
+            True if key found, False otherwise
+        """
+        if node is None:
+            return False
+        if node.val[0] == key:
+            return True
+        return self._contains_chain(node.nxt, key)
 
     def remove(self, key: K) -> bool:
         """Remove key-value pair from table.
@@ -103,15 +120,13 @@ class HashTableSC[K, V]:
             True if key was removed, False if not found
         """
         hv = hash(key) % self.sz
-        result = self._remove_chain(self.table[hv], key)
-        if result is not None:
-            self.table[hv] = result[0]
-            return result[1]
-        return False
+        new_head, removed = self._remove_chain(self.table[hv], key)
+        self.table[hv] = new_head
+        return removed
 
     def _remove_chain(
         self, node: LLNode[tuple[K, V]] | None, key: K
-    ) -> tuple[LLNode[tuple[K, V]] | None, bool] | None:
+    ) -> tuple[LLNode[tuple[K, V]] | None, bool]:
         """Recursively remove key from chain.
 
         Args:
@@ -119,7 +134,7 @@ class HashTableSC[K, V]:
             key: Key to remove
 
         Returns:
-            Tuple of (updated chain head, success flag) or None
+            Tuple of (updated chain head, success flag)
         """
         if node is None:
             return (None, False)
@@ -129,12 +144,9 @@ class HashTableSC[K, V]:
             return (node.nxt, True)
 
         # Recurse and update link
-        result = self._remove_chain(node.nxt, key)
-        if result is not None:
-            node.nxt = result[0]
-            return (node, result[1])
-
-        return None
+        new_next, removed = self._remove_chain(node.nxt, key)
+        node.nxt = new_next
+        return (node, removed)
 
     def is_empty(self) -> bool:
         """Check if table is empty.
