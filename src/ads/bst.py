@@ -124,7 +124,6 @@ class BST[T]:
         """Remove k-th largest element. Raises ValueError if k invalid."""
         if k < 1 or k > self.size():
             raise ValueError(f"Invalid k={k} for tree of size {self.size()}")
-        """Sort the tree in order and remove the k-th largest element."""
         sorted_keys = list(self.inorder_iter())
         key_to_remove = sorted_keys[-(k)]
         self.remove(key_to_remove)
