@@ -112,7 +112,22 @@ Ett binärt sökträd (BST) är en trädstruktur där varje nod har maximalt tv�
 - Vänster delträd innehåller bara mindre värden
 - Höger delträd innehåller bara större värden
 
-Implementationen är helt rekursiv.
+Implementationen är helt rekursiv och använder Python's generiska typsystem med `BST[T]` där `T` är typen av element som lagras.
+
+### Generisk implementation
+
+BST-implementationen är generisk och kan hantera olika datatyper:
+
+**Datatyper som fungerar direkt:**
+- `BST[int]()` - heltal (sorteras numeriskt)
+- `BST[str]()` - strängar (sorteras alfabetiskt)
+- `BST[float]()` - flyttal (sorteras numeriskt)
+- `BST[tuple]()` - tupler (sorteras lexikografiskt)
+
+**Anpassade klasser:**
+För anpassade klasser (som `Vehicle`) krävs implementation av jämförelsemetoder: `__lt__()`, `__le__()`, `__gt__()` och `__ge__()`
+
+Obs att jag övervägde men valde att inte implementera fler jämförelsemetoder i `Vehicle`-klassen eftersom den endast förväntas använda hashtabell och inte BST (enligt uppgift 5).
 
 ### Implementerade operationer
 
