@@ -214,7 +214,7 @@ När två nycklar hashas till samma hink läggs båda i hinkens linked list. Det
 - Fungerar bra med bra hashfunktion och lagom tabellstorlek
 
 **Prestanda:**
-Med n element och m hinkar är lastfaktorn α = n/m. Vid god hashfunktion är operationer O(1 + α) i genomsnitt.
+Med n element och m hinkar är load factor α = n/m. Vid god hashfunktion är operationer O(1 + α) i genomsnitt.
 
 ### Implementerade operationer
 
@@ -230,7 +230,7 @@ Alla operationer använder rekursiva hjälpmetoder för att traversera kedjorna.
 
 ---
 
-## Uppgift 5: Fordonregister & Hashfunktionsanalys
+## Uppgift 5: Fordonregister & hashfunktionsanalys
 
 ### Vehicle-klass
 
@@ -259,7 +259,7 @@ Svenska registreringsnummer har formatet: **3 bokstäver + 2 siffror + 1 bokstav
 
 Exempel: `ABC12D`, `MLB84A`, `JGB132`
 
-Detta ger 26³ × 10² × 26 = **45 697 600** möjliga kombinationer.
+Detta ger 26³ × 10² × 26 = 45697600 möjliga kombinationer.
 
 ### Hashfunktionen
 
@@ -273,24 +273,26 @@ def __hash__(self) -> int:
     return hv
 ```
 
-#### Varför denna design?
+#### Designval
 
-Hashfunktionen kallas **polynomial rolling hash** och följer mönstret från föreläsningsbilderna. Den startar med primtalet 17 och multiplicerar med primtalet 31 för varje tecken innan tecknets värde adderas. Primtalen (samma som visas i föreläsningsexempel för Person-klassen) bryter mönster och minskar systematiska kollisioner. Det viktiga är att funktionen är **positionsviktad** - varje tecken bidrar olika beroende på var det står, så `"ABC12D"` och `"D21CBA"` får olika hashvärden trots samma tecken.
+Hashfunktionen kallas "polynomial rolling hash" och följer samma approach som föreläsningarna. Den startar med primtalet 17 och multiplicerar med primtalet 31 för varje tecken innan tecknets värde adderas. Primtalen (samma som visas i föreläsningsexempel för Person-klassen) bryter mönster och minskar mängden kollisioner. Det viktiga är att funktionen är *positionsviktad* - varje tecken bidrar olika beroende på var det står, så `"ABC12D"` och `"D21CBA"` får olika hashvärden trots samma tecken. Annars skulle anagram få samma hashvärden.
 
-Ett dåligt alternativ vore enkel addition (`sum(ord(c) for c in key)`) som föreläsningsbilderna varnar för. Då får anagram samma hashvärde eftersom ordning inte spelar roll - `"ABC12D"` och `"BAC12D"` skulle kollidera. Polynomial hash löser detta genom att position vägs in.
+### Testning
 
-### Experimentupplägg
-
-Demo-notebooken kör ett experiment för att testa hashfunktionen:
+Demo-notebooken kör ett experiment att testa hashfunktionen:
 
 **Konfiguration:**
 - Antal fordon (n): 500
 - Tabellstorlek (m): 101 (primtal)
-- Lastfaktor (α): 500/101 ≈ 4.95
+- Load factor (α): 500/101 ≈ 4.95
 - Registreringsnummer: Slumpmässiga svenska nummer (ABC12D-format)
 - Random seed: 42 (för reproducerbarhet)
 
-Lastfaktorn α ≈ 5 ger en bra balans - vid högre värden (α > 10) blir det så många kollisioner att det är svårt att utvärdera hashfunktionen, vid låga värden (α < 1) finns för lite data.
+Load factor α ≈ 5 ger en bra balans - vid högre värden (α > 10) blir det så många kollisioner att det är svårt att utvärdera hashfunktionen, vid låga värden (α < 1) finns för lite data.
+
+**Val av tabellstorlek:**
+
+I föreläsning 5 nämns att man bör välja m ≈ n/5 för att få bra prestanda. Jag tolkade detta som en tumregel för att välja en bra initial storlek, inte som ett krav på att dynamiskt ändra tabellstorleken när antalet element växer. Jag testade att implementera dynamisk storleksändring på två olika sätt (beräkna närmaste primtal och använda förkalkylerad primtalstabell), men det tillförde bara komplexitet som inte kändes nödvändig för uppgiften. Istället valde jag en fast tabellstorlek: m=31 som standard och m=101 för experimentet. Med n=500 fordon blir m=101 nära den rekommenderade storleken (500/5 = 100), vilket ger en lagom load factor för att kunna utvärdera hashfunktionen.
 
 ### Mätvärden
 
@@ -375,7 +377,7 @@ Polynomial rolling hash med primmultiplikatorer (17, 31) är en bra hashfunktion
 
 Experimenten i `task5_vehicle_registry_demo.ipynb` visar att kedjelängderna fördelas jämnt runt det förväntade värdet utan extrem klustring eller hotspots. Antalet tomma hinkar är lågt med load factor ≈ 5, och funktionen presterar bättre än en naiv additionshash eftersom den undviker anagramkollisioner.
 
-Hashfunktionen bör därför fungera bra för ett fordonregistersystem. Kombinationen av primmultiplikatorer och positionsviktning ger bra spridning utan att bli onödigt komplicerad. Med lastfaktor α ≈ 5 behövs i genomsnitt cirka 5 jämförelser per sökning. Om snabbare prestanda behövs kan tabellstorleken ökas för att minska lastfaktorn, vilket ger snabbare sökning i utbyte mot mer minnesanvändning.
+Hashfunktionen bör därför fungera bra för ett fordonregistersystem. Kombinationen av primmultiplikatorer och positionsviktning ger bra spridning utan att bli onödigt komplicerad. Med load factor α ≈ 5 behövs i genomsnitt cirka 5 jämförelser per sökning. Om snabbare prestanda behövs kan tabellstorleken ökas för att minska load factor, vilket ger snabbare sökning i utbyte mot mer minnesanvändning.
 
 ---
 
