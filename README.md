@@ -32,7 +32,7 @@ assignment_2/
 source activate.sh
 ```
 
-This script detects your conda installation (miniconda3 or anaconda3), creates the `assignment2` environment from `environment.yml` if needed, and activates it.
+This script detects your conda installation, creates the `assignment2` environment from `environment.yml` if needed, and activates it.
 
 **Install package in development mode:**
 ```bash
