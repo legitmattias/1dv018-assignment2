@@ -263,7 +263,7 @@ Detta ger 26³ × 10² × 26 = 45697600 möjliga kombinationer.
 
 ### Hashfunktionen
 
-Vehicle-klassen implementerar en egen `__hash__()` metod som följer mönstret från föreläsningsbilderna:
+Vehicle-klassen implementerar en egen `__hash__()` metod som följer mönstret från föreläsning 5:
 
 ```python
 def __hash__(self) -> int:
@@ -275,11 +275,11 @@ def __hash__(self) -> int:
 
 #### Designval
 
-Hashfunktionen kallas "polynomial rolling hash" och följer samma approach som föreläsningarna. Den startar med primtalet 17 och multiplicerar med primtalet 31 för varje tecken innan tecknets värde adderas. Primtalen (samma som visas i föreläsningsexempel för Person-klassen) bryter mönster och minskar mängden kollisioner. Det viktiga är att funktionen är *positionsviktad* - varje tecken bidrar olika beroende på var det står, så `"ABC12D"` och `"D21CBA"` får olika hashvärden trots samma tecken. Annars skulle anagram få samma hashvärden.
+Jag valde en "polynomial rolling hash" som börjar med 17 och multiplicerar med 31 för varje tecken. Primtalen 17 och 31 kommer från föreläsningsexemplet med Person-klassen. Det viktiga är att funktionen är *positionsviktad* så att `"ABC12D"` och `"D21CBA"` får olika hashvärden även om de innehåller samma tecken.
 
 ### Testning
 
-Demo-notebooken kör ett experiment att testa hashfunktionen:
+Demo-notebooken kör ett experiment för att testa hashfunktionen:
 
 **Konfiguration:**
 - Antal fordon (n): 500
@@ -363,9 +363,9 @@ Notebooken skapar två diagram:
 
 ### Kvalitetsbedömning
 
-Hashfunktionen följer best practice från föreläsningarna med primtal och positionsviktning för att undvika anagram-kollisioner. Polynomial rolling hash är standard i litteraturen (samma approach som Java String.hashCode()) och passar bra för svenska registreringsnummer som har hög variation och inga systematiska prefix. Beräkningen är effektiv med O(k) där k = stränglängd (6).
+Hashfunktionen följer samma mönster som föreläsningarna med primtal och positionsviktning för att undvika anagram-kollisioner. Den är enkel att implementera och effektiv (O(k) där k = 6 tecken).
 
-Svagheten är att små ändringar i input ger förutsägbara ändringar i output. Om registreringsnummer utfärdas sekventiellt kan de hasha till närliggande hinkar, men detta är inte ett problem för slumpmässiga nummer. Funktionen beror också på att tabellstorlek är primtal - icke-prima storlekar kan skapa mönster. Den är inte kryptografiskt säker, men det behövs inte för hashtabeller.
+En svaghet är att sekventiella registreringsnummer kan hasha till närliggande hinkar, men det spelar ingen roll för slumpmässiga nummer. Funktionen fungerar bäst när tabellstorleken är ett primtal.
 
 ### Kollisionsanalys
 
@@ -373,11 +373,11 @@ I en hashtabell med separate chaining är en kollision när två olika nycklar h
 
 ### Slutsats
 
-Polynomial rolling hash med primmultiplikatorer (17, 31) är en bra hashfunktion för svenska registreringsnummer. Den följer best practice från föreläsningarna och förhindrar anagramkollisioner genom positionsviktning. Funktionen är både enkel att implementera och förstå, samt effektiv i beräkningen då den gör ett enda pass genom strängen. Dessutom ger den bra distribution för slumpmässiga registreringsdata.
+Polynomial rolling hash med primtalen 17 och 31 fungerar bra för svenska registreringsnummer. Den följer mönstret från föreläsningarna och undviker anagramkollisioner genom positionsviktning. Funktionen är enkel att implementera och gör bara ett pass genom strängen.
 
-Experimenten i `task5_vehicle_registry_demo.ipynb` visar att kedjelängderna fördelas jämnt runt det förväntade värdet utan extrem klustring eller hotspots. Antalet tomma hinkar är lågt med load factor ≈ 5, och funktionen presterar bättre än en naiv additionshash eftersom den undviker anagramkollisioner.
+Experimenten i `task5_vehicle_registry_demo.ipynb` visar att kedjelängderna fördelas jämnt runt det förväntade värdet. Få hinkar är tomma med load factor ≈ 5, och funktionen undviker anagramkollisioner till skillnad från en enkel additionshash.
 
-Hashfunktionen bör därför fungera bra för ett fordonregistersystem. Kombinationen av primmultiplikatorer och positionsviktning ger bra spridning utan att bli onödigt komplicerad. Med load factor α ≈ 5 behövs i genomsnitt cirka 5 jämförelser per sökning. Om snabbare prestanda behövs kan tabellstorleken ökas för att minska load factor, vilket ger snabbare sökning i utbyte mot mer minnesanvändning.
+Med load factor α ≈ 5 behövs i genomsnitt cirka 5 jämförelser per sökning. Om snabbare prestanda behövs kan tabellstorleken ökas för att minska load factor.
 
 ---
 
