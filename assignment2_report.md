@@ -3,7 +3,7 @@
 **Kurs**: 1DV018 - Algoritmer och datastrukturer
 **Namn**: Mattias Ubbesen, mu222cu
 
-## Innehåll
+## Innehållsförteckning
 
 1. [Introduktion](#introduktion)
 2. [Uppgift 1: Linked List](#uppgift-1-linked-list)
@@ -11,7 +11,6 @@
 4. [Uppgift 3: Binärt Sökträd](#uppgift-3-binärt-sökträd)
 5. [Uppgift 4: Hashtabell](#uppgift-4-hashtabell)
 6. [Uppgift 5: Fordonregister & Hashfunktionsanalys](#uppgift-5-fordonregister--hashfunktionsanalys)
-7. [Sammanfattning](#sammanfattning)
 
 ---
 
