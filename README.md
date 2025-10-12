@@ -27,28 +27,39 @@ assignment_2/
 
 ## Setup
 
-**Environment activation:**
+**1. Create conda environment:**
 ```bash
-source activate.sh
+conda env create -f environment.yml
 ```
 
-This script detects your conda installation, creates the `assignment2` environment from `environment.yml` if needed, and activates it.
+**2. Activate the environment:**
+```bash
+conda activate assignment2
+```
 
-**Install package in development mode:**
+**3. Install package in development mode:**
 ```bash
 pip install -e .
 ```
 
 This makes the `ads` package importable from notebooks.
 
-## Running the Code
+**Note:** An `activate.sh` convenience script is provided but may require path adjustments for different conda installations. The manual commands above are recommended.
 
-**View demonstrations:**
+## Running the Notebooks
+
+**In VSCode:**
+1. Open any notebook in `notebooks/`
+2. Click "Select Kernel" in the top right corner
+3. Select "Python Environments..." → find and select "assignment2" (conda)
+   - If not visible, reload VSCode or use Ctrl+Shift+P → "Python: Select Interpreter" → choose assignment2
+4. Run cells with Shift+Enter or "Run All" from the menu
+
+**In Jupyter (browser):**
 ```bash
 jupyter notebook
 ```
-
-Open any of the `notebooks/task*.ipynb` files. Each notebook demonstrates the corresponding data structure with examples and analysis.
+The notebooks will automatically use the "assignment2" kernel.
 
 **Linting and formatting:**
 ```bash
