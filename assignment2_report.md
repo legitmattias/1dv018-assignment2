@@ -127,8 +127,6 @@ BST-implementationen är generisk och kan hantera olika datatyper:
 **Anpassade klasser:**
 För anpassade klasser (som `Vehicle`) krävs implementation av jämförelsemetoder: `__lt__()`, `__le__()`, `__gt__()` och `__ge__()`
 
-Obs att jag övervägde men valde att inte implementera fler jämförelsemetoder i `Vehicle`-klassen eftersom den endast förväntas använda hashtabell och inte BST (enligt uppgift 5).
-
 ### Implementerade operationer
 
 **Grundläggande operationer:**
@@ -259,8 +257,6 @@ Svenska registreringsnummer har formatet: **3 bokstäver + 2 siffror + 1 bokstav
 
 Exempel: `ABC12D`, `MLB84A`, `JGB132`
 
-Detta ger 26³ × 10² × 26 = 45697600 möjliga kombinationer.
-
 ### Hashfunktionen
 
 Vehicle-klassen implementerar en egen `__hash__()` metod som följer mönstret från föreläsning 5:
@@ -283,48 +279,16 @@ Demo-notebooken kör ett experiment för att testa hashfunktionen:
 
 **Konfiguration:**
 - Antal fordon (n): 500
-- Tabellstorlek (m): 101 (primtal)
+- Tabellstorlek (m): 101 (primtal för bättre distribution)
 - Load factor (α): 500/101 ≈ 4.95
 - Registreringsnummer: Slumpmässiga svenska nummer (ABC12D-format)
 - Random seed: 42 (för reproducerbarhet)
 
-Load factor α ≈ 5 ger en bra balans - vid högre värden (α > 10) blir det så många kollisioner att det är svårt att utvärdera hashfunktionen, vid låga värden (α < 1) finns för lite data.
-
-**Val av tabellstorlek:**
-
-I föreläsning 5 nämns att man bör välja m ≈ n/5 för att få bra prestanda. Jag tolkade detta som en tumregel för att välja en bra initial storlek, inte som ett krav på att dynamiskt ändra tabellstorleken när antalet element växer. Jag testade att implementera dynamisk storleksändring på två olika sätt (beräkna närmaste primtal och använda förkalkylerad primtalstabell), men det tillförde bara komplexitet som inte kändes nödvändig för uppgiften. Istället valde jag en fast tabellstorlek: m=31 som standard och m=101 för experimentet. Med n=500 fordon blir m=101 nära den rekommenderade storleken (500/5 = 100), vilket ger en lagom load factor för att kunna utvärdera hashfunktionen.
-
 ### Mätvärden
 
-Notebooken beräknar:
-
-**1. Hinkdistribution:**
-- Antal tomma hinkar
-- Antal icke-tomma hinkar
-- Antal hinkar med kollisioner (kedjelängd > 1)
-
-**2. Kedjelängdsstatistik:**
-- Kortaste kedja (minimum)
-- Längsta kedja (maximum)
-- Genomsnittlig kedjelängd
-- Förväntad kedjelängd: n/m ≈ 4.95
-
-**3. Kvalitetsmått:**
-- Avvikelse från förväntat: |genomsnitt - förväntat|
-- Maxkedja relativt förväntat: max / förväntat
-- Visuell distribution via stapeldiagram
+För att utvärdera hashfunktionen beräknar notebooken först hur elementen fördelas över hinkarna - hur många som är tomma, hur många som har kollisioner, och hur långa kedjorna blir. Genom att jämföra den genomsnittliga kedjelängden mot det förväntade värdet (n/m ≈ 4.95) går det att se om hashfunktionen ger en jämn fördelning. Analysen tittar också på hur långt från förväntat värde den längsta kedjan hamnar, vilket visar om det finns problematiska "hotspots".
 
 ### Resultat
-
-*Exakta siffror varierar beroende på seed, men här är typiska resultat med α ≈ 5:*
-
-**Förväntade resultat:**
-
-Med 500 fordon i 101 hinkar är följande förväntat:
-- Genomsnittlig kedjelängd: ≈ 4.95
-- Tomma hinkar: ~1-2% (ca 1-2 hinkar)
-- Maximal kedja: ≈ 15 (teoretiskt: α + √(α × ln m))
-- Distribution: De flesta hinkar har 3-7 element
 
 **Jämförelse: Enkel hash vs Polynomial hash**
 
@@ -362,29 +326,6 @@ Notebooken skapar två diagram:
 
 ![Hashtabell distribution - Kedjelängd per hink och frekvens av kedjelängder](notebooks/figures/hashtable_graph.png)
 
-### Kvalitetsbedömning
+### Analys och slutsats
 
-Hashfunktionen följer samma mönster som föreläsningarna med primtal och positionsviktning för att undvika anagramkollisioner. Den är enkel att implementera och effektiv (O(k) där k = 6 tecken).
-
-En svaghet är att sekventiella registreringsnummer kan hasha till närliggande hinkar, men det spelar ingen roll för slumpmässiga nummer. Funktionen fungerar bäst när tabellstorleken är ett primtal.
-
-### Kollisionsanalys
-
-I en hashtabell med separate chaining är en kollision när två olika nycklar hashas till samma hink. Med α ≈ 5 är kollisioner normala och förväntade - det är därför chaining används. En bra hashfunktion undviker "hotspot"-hinkar med mycket långa kedjor, och tomma hinkar. Det ser till att det blir bra spridning och håller kedjelängder nära förväntat värde (n/m). Resultatet bör ligga nära det teoretiska idealet om hashfunktionen är bra.
-
-### Slutsats
-
-Polynomial rolling hash med primtalen 17 och 31 fungerar bra för svenska registreringsnummer. Den följer mönstret från föreläsningarna och undviker anagramkollisioner genom positionsviktning. Funktionen är enkel att implementera och behöver bara gå igenom strängen en gång. Experimenten i `task5_vehicle_registry_demo.ipynb` visar att kedjelängderna fördelas jämnt runt det förväntade värdet. Få hinkar är tomma med load factor ≈ 5, och funktionen undviker anagramkollisioner till skillnad från en enkel additionshash. Med load factor α ≈ 5 behövs i genomsnitt cirka 5 jämförelser per sökning. Om snabbare prestanda behövs kan tabellstorleken ökas för att minska load factor, men som nämns i föreläsningen så anses det vara en bra avvägning.
-
----
-
-### Kodkvalitet
-
-All kod:
-- Följer Python 3.12 stil med typannoteringar
-- Lintad med Ruff (inga fel)
-- Typkollad med mypy (inga fel)
-- Dokumenterad med docstrings
-- Demonstrerad i Jupyter notebooks
-
-Implementationerna använder rekursiv stil och generics `[T]` för typsäkerhet.
+Polynomial rolling hash med primtalen 17 och 31 fungerar bra för svenska registreringsnummer. Den undviker anagramkollisioner genom positionsviktning och är effektiv att beräkna (O(k) där k = 6 tecken). Experimenten visar att kedjelängderna fördelas jämnt runt det förväntade värdet (n/m ≈ 5), vilket indikerar god distribution. Load factor α ≈ 5 är enligt föreläsning 5 en bra avvägning mellan minnesanvändning och prestanda. Med denna faktor är kollisioner normala men hanteras effektivt av separate chaining, medan hashfunktionen undviker problematiska "hotspots" med mycket långa kedjor.
