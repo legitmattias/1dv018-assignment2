@@ -28,8 +28,15 @@ fi
 
 conda activate "$ENV_NAME" || { echo "Failed to activate $ENV_NAME"; return 1 2>/dev/null || exit 1; }
 
+# Register Jupyter kernel if not already registered
+if ! jupyter kernelspec list | grep -q "$ENV_NAME"; then
+  echo "Registering Jupyter kernel for $ENV_NAME..."
+  python -m ipykernel install --user --name "$ENV_NAME" --display-name "Python ($ENV_NAME)"
+fi
+
 python -c "import sys; print('Python', sys.version)"
 which python
 
 echo
-echo "Tip: 'source activate.sh' to keep this shell in the env."
+echo "Environment activated. Jupyter kernel registered."
+echo "Run 'pip install -e .' to install the ads package, then 'jupyter notebook' to start."
