@@ -316,7 +316,7 @@ Notebooken beräknar:
 
 ### Resultat
 
-*Exakta siffror varierar beroende på slumpfrö, men här är typiska resultat med α ≈ 5:*
+*Exakta siffror varierar beroende på seed, men här är typiska resultat med α ≈ 5:*
 
 **Förväntade resultat:**
 
@@ -340,10 +340,10 @@ JGB132        370         67           23
 ```
 
 **Observation:**
-- Enkel hash: `"ABC12D"` och `"BAC12D"` får samma hash (394) → kollision!
+- Enkel hash: `"ABC12D"` och `"BAC12D"` får samma hash (394), dvs kollision.
 - Polynomial hash: Alla får olika värden
-- Enkel hash skapar många anagram-kollisioner
-- Polynomial hash distribuerar bättre
+- Enkel hash skapar många anagramkollisioner
+- Polynomial hash fördelar bättre
 
 ### Visualisering
 
@@ -351,8 +351,7 @@ Notebooken skapar två diagram:
 
 **1. Kedjelängd per hink (vänster)**
 - Stapeldiagram med en stapel per hink (0-100)
-- Färger indikerar problem:
-  - Röd: Tom hink (slösat utrymme)
+- Förklaring av staplarnas färger:
   - Orange: Överlastad hink (> förväntat × 1.5)
   - Blå: Normal hink
 - Grön streckad linje visar förväntat värde (n/m)
@@ -361,9 +360,11 @@ Notebooken skapar två diagram:
 - Histogram som visar hur många hinkar som har varje kedjelängd
 - Visar om distributionen följer Poisson-fördelning (förväntat)
 
+![Hashtabell distribution - Kedjelängd per hink och frekvens av kedjelängder](notebooks/figures/hashtable_graph.png)
+
 ### Kvalitetsbedömning
 
-Hashfunktionen följer samma mönster som föreläsningarna med primtal och positionsviktning för att undvika anagram-kollisioner. Den är enkel att implementera och effektiv (O(k) där k = 6 tecken).
+Hashfunktionen följer samma mönster som föreläsningarna med primtal och positionsviktning för att undvika anagramkollisioner. Den är enkel att implementera och effektiv (O(k) där k = 6 tecken).
 
 En svaghet är att sekventiella registreringsnummer kan hasha till närliggande hinkar, men det spelar ingen roll för slumpmässiga nummer. Funktionen fungerar bäst när tabellstorleken är ett primtal.
 
@@ -373,27 +374,9 @@ I en hashtabell med separate chaining är en kollision när två olika nycklar h
 
 ### Slutsats
 
-Polynomial rolling hash med primtalen 17 och 31 fungerar bra för svenska registreringsnummer. Den följer mönstret från föreläsningarna och undviker anagramkollisioner genom positionsviktning. Funktionen är enkel att implementera och gör bara ett pass genom strängen.
-
-Experimenten i `task5_vehicle_registry_demo.ipynb` visar att kedjelängderna fördelas jämnt runt det förväntade värdet. Få hinkar är tomma med load factor ≈ 5, och funktionen undviker anagramkollisioner till skillnad från en enkel additionshash.
-
-Med load factor α ≈ 5 behövs i genomsnitt cirka 5 jämförelser per sökning. Om snabbare prestanda behövs kan tabellstorleken ökas för att minska load factor.
+Polynomial rolling hash med primtalen 17 och 31 fungerar bra för svenska registreringsnummer. Den följer mönstret från föreläsningarna och undviker anagramkollisioner genom positionsviktning. Funktionen är enkel att implementera och behöver bara gå igenom strängen en gång. Experimenten i `task5_vehicle_registry_demo.ipynb` visar att kedjelängderna fördelas jämnt runt det förväntade värdet. Få hinkar är tomma med load factor ≈ 5, och funktionen undviker anagramkollisioner till skillnad från en enkel additionshash. Med load factor α ≈ 5 behövs i genomsnitt cirka 5 jämförelser per sökning. Om snabbare prestanda behövs kan tabellstorleken ökas för att minska load factor, men som nämns i föreläsningen så anses det vara en bra avvägning.
 
 ---
-
-## Sammanfattning
-
-Denna uppgift har implementerat fem fundamentala datastrukturer:
-
-**Linked list** ger O(1) insättning vid början men O(n) åtkomst. Används för hash chaining.
-
-**Deque** med dubbel linked list ger O(1) operationer i båda ändar. Kan fungera som stack eller kö.
-
-**Binärt sökträd** ger O(log n) operationer när balanserat, men degenererar till O(n) med sorterad input. AVL-träd löser detta.
-
-**Hashtabell** med separate chaining använder linked list för kollisioner. Ger O(1) genomsnittlig tid med bra hashfunktion.
-
-**Fordonregister** demonstrerar egen hashfunktion baserad på registreringsnummer. Polynomial rolling hash med primtal ger bra distribution enligt experimentresultat.
 
 ### Kodkvalitet
 
