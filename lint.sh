@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Script to run Ruff linting and formatting
 
 echo "Running Ruff linting and formatting..."
